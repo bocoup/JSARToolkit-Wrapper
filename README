@@ -1,0 +1,75 @@
+JSARToolkit-Wrapper
+
+A simple API to make JSARToolkit easier to use.
+
+
+
+Example Usage:
+
+
+    // Example of creating a new tracker object with all possible options
+    var myTracker = jsartoolkit.tracker({
+        src       : 'my-video.webm',                  // Source of the video file
+        autoplay  : true,                             // Does the video start automatically
+        repeat    : true,                             // Loop the video
+        volume    : 0,                                // Volume of audio from video source
+        target    : doc.getElementById('DOMTarget'),  // The DOM element in which to append the canvas
+        width     : 720,                              // Width of the final output
+        height    : 360,                              // Height of the final output
+        threshold : 100,                              // Adjust tracking-threshold to suit video lighting
+        ratio     : 0.5,                              // Adjust size of hidden tracking-canvas (1 = same as video size)
+        debug     : false                             // Add a debug canvas to the DOM target that will help when adjusting the threshold
+    });
+
+    // Add an image to the first Augmented Reality marker
+    myTracker.marker(0).image('my-image_01.png');
+
+    // Add Blender3D models to Augmented Reality markers
+    myTracker.marker(2).model('HTML5_Logo001');
+
+    // Adjust properties of Marker_0
+    myTracker.marker(0)
+      .scale(1)
+      .axis(0, 0, 1)
+      .angle(0)
+      .position(0,0,0)
+    ;
+    
+    // A callback can be fired when an image has been loaded
+    myTracker.marker(1).image('my-image_02.png', function( e ){
+      console.log( 'Image loaded!', e );
+    });
+
+    // Add new images for two more Markers
+    myTracker.marker(2).image('my-image_03.png');
+    myTracker.marker(3).image('my-image_04.png');
+
+
+    // Update the image for Marker_0
+    myTracker.marker(0).image('my-image_04.png');
+
+    // Animate the properties of Marker_0 on a timer
+    var interval = global.setInterval( function(){
+      var date    = + new Date(),
+          scl     = 1.5 + (Math.sin( date/200 ) * 0.5),
+          axs     = Math.cos( date/300 ),
+          posX    = Math.sin( date/300 ),
+          posY    = Math.cos( date/300 )
+      ;
+    
+      myTracker.marker(0)
+        .scale(scl)
+        .axis(0, axs, 0)
+        .position(posY, posX, 0)
+        .angle(date / 230)
+      ;
+    }, 20);
+
+    // Access the Tracker's Video Element and update it's currentTime
+    myTracker.video.currentTime = 1;
+
+
+  };
+ 
+  // Call the initialize function when the page finishes loading
+  doc.addEventListener( 'DOMContentLoaded', function(){ initialize();
